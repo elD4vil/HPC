@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  maestro:
+    build: ./maestro
+    depends_on:
+      - memoria1
+      - memoria2
+    networks:
+      - redcluster
+
+  memoria1:
+    build: ./memoria
+    networks:
+      - redcluster
+
+  memoria2:
+    build: ./memoria
+    networks:
+      - redcluster
+
+  esclavo1:
+    build: ./esclavo
+    networks:
+      - redcluster
+
+  esclavo2:
+    build: ./esclavo
+    networks:
+      - redcluster
+
+  registry:
+    image: registry:2
+    ports:
+      - "5000:5000"
+
+networks:
+  redcluster:
