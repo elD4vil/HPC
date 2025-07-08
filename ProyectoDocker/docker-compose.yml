@@ -1,38 +1,128 @@
-version: '3'
-
 services:
   maestro:
     build: ./maestro
+    ports:
+      - "${MAESTRO_PORT}:${MAESTRO_PORT}"
+    environment:
+      - PYTHONUNBUFFERED=${PYTHONUNBUFFERED}
+      - MAESTRO_HOST=${MAESTRO_HOST}
+      - MAESTRO_PORT=${MAESTRO_PORT}
+      - DEBUG_MODE=${DEBUG_MODE}
+      - ARCHIVO_TRABAJOS=${ARCHIVO_TRABAJOS}
+      - ARCHIVO_RESULTADOS=${ARCHIVO_RESULTADOS}
+      - PING_TIMEOUT=${PING_TIMEOUT}
+      - DISTRIBUCION_INTERVAL=${DISTRIBUCION_INTERVAL}
+      - CARGA_AUTO_TRABAJOS=${CARGA_AUTO_TRABAJOS}
+      - MONITOR_ARCHIVO_INTERVAL=${MONITOR_ARCHIVO_INTERVAL}
     depends_on:
       - memoria1
       - memoria2
     networks:
       - redcluster
+    volumes:
+      - ./maestro/${ARCHIVO_TRABAJOS}:/app/${ARCHIVO_TRABAJOS}
+      - ./maestro/${ARCHIVO_RESULTADOS}:/app/${ARCHIVO_RESULTADOS}
 
   memoria1:
     build: ./memoria
+    environment:
+      - MEMORIA_NODE=${MEMORIA1_ID}
+      - MAESTRO_IP=${MAESTRO_IP}
+      - PYTHONUNBUFFERED=${PYTHONUNBUFFERED}
+      - MEMORIA_HOST=${MEMORIA_HOST}
+      - MEMORIA_PORT=${MEMORIA_PORT}
+      - MEMORIA_REPORT_INTERVAL=${MEMORIA_REPORT_INTERVAL}
+      - MEMORIA_CPU_THRESHOLD=${MEMORIA_CPU_THRESHOLD}
+      - MEMORIA_RAM_THRESHOLD=${MEMORIA_RAM_THRESHOLD}
+      - MEMORIA_DISK_THRESHOLD=${MEMORIA_DISK_THRESHOLD}
+      - HTTP_TIMEOUT=${HTTP_TIMEOUT}
+    ports:
+      - "${MEMORIA1_EXTERNAL_PORT}:${MEMORIA_PORT}"
     networks:
       - redcluster
 
   memoria2:
     build: ./memoria
+    environment:
+      - MEMORIA_NODE=${MEMORIA2_ID}
+      - MAESTRO_IP=${MAESTRO_IP}
+      - PYTHONUNBUFFERED=${PYTHONUNBUFFERED}
+      - MEMORIA_HOST=${MEMORIA_HOST}
+      - MEMORIA_PORT=${MEMORIA_PORT}
+      - MEMORIA_REPORT_INTERVAL=${MEMORIA_REPORT_INTERVAL}
+      - MEMORIA_CPU_THRESHOLD=${MEMORIA_CPU_THRESHOLD}
+      - MEMORIA_RAM_THRESHOLD=${MEMORIA_RAM_THRESHOLD}
+      - MEMORIA_DISK_THRESHOLD=${MEMORIA_DISK_THRESHOLD}
+      - HTTP_TIMEOUT=${HTTP_TIMEOUT}
+    ports:
+      - "${MEMORIA2_EXTERNAL_PORT}:${MEMORIA_PORT}"
     networks:
       - redcluster
 
   esclavo1:
-    build: ./esclavo
+    build:
+      context: .
+      dockerfile: ./esclavo/Dockerfile
+    environment:
+      - ESCLAVO=${ESCLAVO1_ID}
+      - MAESTRO_IP=${MAESTRO_IP}
+      - PYTHONUNBUFFERED=${PYTHONUNBUFFERED}
+      - ESCLAVO_HOST=${ESCLAVO_HOST}
+      - ESCLAVO_PORT=${ESCLAVO_PORT}
+      - ESCLAVO_TIMEOUT=${ESCLAVO_TIMEOUT}
+      - HTTP_TIMEOUT=${HTTP_TIMEOUT}
+      - ALGORITMOS_DISPONIBLES=${ALGORITMOS_DISPONIBLES}
+      - TIMEOUT_ALGORITMO=${TIMEOUT_ALGORITMO}
+    ports:
+      - "${ESCLAVO1_EXTERNAL_PORT}:${ESCLAVO_PORT}"
     networks:
       - redcluster
 
   esclavo2:
-    build: ./esclavo
+    build:
+      context: .
+      dockerfile: ./esclavo/Dockerfile
+    environment:
+      - ESCLAVO=${ESCLAVO2_ID}
+      - MAESTRO_IP=${MAESTRO_IP}
+      - PYTHONUNBUFFERED=${PYTHONUNBUFFERED}
+      - ESCLAVO_HOST=${ESCLAVO_HOST}
+      - ESCLAVO_PORT=${ESCLAVO_PORT}
+      - ESCLAVO_TIMEOUT=${ESCLAVO_TIMEOUT}
+      - HTTP_TIMEOUT=${HTTP_TIMEOUT}
+      - ALGORITMOS_DISPONIBLES=${ALGORITMOS_DISPONIBLES}
+      - TIMEOUT_ALGORITMO=${TIMEOUT_ALGORITMO}
+    ports:
+      - "${ESCLAVO2_EXTERNAL_PORT}:${ESCLAVO_PORT}"
+    networks:
+      - redcluster
+
+  esclavo3:
+    build:
+      context: .
+      dockerfile: ./esclavo/Dockerfile
+    environment:
+      - ESCLAVO=${ESCLAVO3_ID}
+      - MAESTRO_IP=${MAESTRO_IP}
+      - PYTHONUNBUFFERED=${PYTHONUNBUFFERED}
+      - ESCLAVO_HOST=${ESCLAVO_HOST}
+      - ESCLAVO_PORT=${ESCLAVO_PORT}
+      - ESCLAVO_TIMEOUT=${ESCLAVO_TIMEOUT}
+      - HTTP_TIMEOUT=${HTTP_TIMEOUT}
+      - ALGORITMOS_DISPONIBLES=${ALGORITMOS_DISPONIBLES}
+      - TIMEOUT_ALGORITMO=${TIMEOUT_ALGORITMO}
+    ports:
+      - "${ESCLAVO3_EXTERNAL_PORT}:${ESCLAVO_PORT}"
     networks:
       - redcluster
 
   registry:
     image: registry:2
     ports:
-      - "5000:5000"
+      - "${REGISTRY_PORT}:5000"
+    networks:
+      - redcluster
 
 networks:
   redcluster:
+    driver: bridge

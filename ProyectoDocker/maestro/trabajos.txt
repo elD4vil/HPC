@@ -1,0 +1,28 @@
+# Lista de trabajos para el sistema HPC
+# Formato: algoritmo,width,height,iteraciones,prioridad
+# Las líneas que empiecen con # son comentarios
+
+# Trabajos de prueba básicos
+Secuencial,800,600,100,1
+Numpy,1000,800,150,2
+juliaCython,1200,900,200,1
+
+# Trabajos de carga media
+Secuencial,1500,1200,300,2
+Numpy,1600,1200,250,1
+juliaCython,1800,1400,400,3
+
+# Trabajos de alta resolución
+Secuencial,2000,1500,500,3
+Numpy,2200,1800,600,2
+juliaCython,2400,2000,800,1
+
+# Trabajos intensivos
+Secuencial,3000,2400,1000,3
+Numpy,3200,2500,1200,2
+juliaCython,3500,2800,1500,1
+
+# Trabajos de estrés
+Secuencial,4000,3000,2000,3
+Numpy,4500,3500,2500,2
+juliaCython,5000,4000,3000,1
