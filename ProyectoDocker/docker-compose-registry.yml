@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  maestro:
+    image: localhost:5000/hpc-maestro:latest
+    container_name: hpc-maestro-registry
+    ports:
+      - "5001:5001"
+    environment:
+      - MAESTRO_PORT=5001
+      - DEBUG_MODE=true
+      - ARCHIVO_TRABAJOS=trabajos.txt
+      - ARCHIVO_RESULTADOS=resultados.txt
+    volumes:
+      - ./maestro/trabajos.txt:/app/trabajos.txt
+      - ./maestro/resultados.txt:/app/resultados.txt
+    networks:
+      - hpc-network
+    depends_on:
+      - memoria1
+      - memoria2
+    restart: unless-stopped
+
+  memoria1:
+    image: localhost:5000/hpc-memoria:latest
+    container_name: hpc-memoria1-registry
+    ports:
+      - "5003:5003"
+    environment:
+      - MEMORIA_ID=memoria1
+      - MEMORIA_PORT=5003
+      - MAESTRO_IP=maestro
+      - MAESTRO_PORT=5001
+    networks:
+      - hpc-network
+    restart: unless-stopped
+
+  memoria2:
+    image: localhost:5000/hpc-memoria:latest
+    container_name: hpc-memoria2-registry
+    ports:
+      - "5004:5004"
+    environment:
+      - MEMORIA_ID=memoria2
+      - MEMORIA_PORT=5004
+      - MAESTRO_IP=maestro
+      - MAESTRO_PORT=5001
+    networks:
+      - hpc-network
+    restart: unless-stopped
+
+  esclavo1:
+    image: localhost:5000/hpc-esclavo:latest
+    container_name: hpc-esclavo1-registry
+    ports:
+      - "5011:5002"
+    environment:
+      - ESCLAVO_ID=esclavo1
+      - ESCLAVO_PORT=5002
+      - MAESTRO_IP=maestro
+      - MAESTRO_PORT=5001
+    networks:
+      - hpc-network
+    restart: unless-stopped
+
+  esclavo2:
+    image: localhost:5000/hpc-esclavo:latest
+    container_name: hpc-esclavo2-registry
+    ports:
+      - "5012:5002"
+    environment:
+      - ESCLAVO_ID=esclavo2
+      - ESCLAVO_PORT=5002
+      - MAESTRO_IP=maestro
+      - MAESTRO_PORT=5001
+    networks:
+      - hpc-network
+    restart: unless-stopped
+
+  esclavo3:
+    image: localhost:5000/hpc-esclavo:latest
+    container_name: hpc-esclavo3-registry
+    ports:
+      - "5013:5002"
+    environment:
+      - ESCLAVO_ID=esclavo3
+      - ESCLAVO_PORT=5002
+      - MAESTRO_IP=maestro
+      - MAESTRO_PORT=5001
+    networks:
+      - hpc-network
+    restart: unless-stopped
+
+networks:
+  hpc-network:
+    driver: bridge

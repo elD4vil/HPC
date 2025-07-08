@@ -11,7 +11,7 @@ WORKDIR /app
 # Instalar dependencias básicas
 RUN pip install flask requests psutil numpy cython
 
-# Copiar archivos del esclavo (desde el directorio padre)
+# Copiar archivos del esclavo
 COPY esclavo_api.py .
 COPY algoritmos/ ./algoritmos/
 
